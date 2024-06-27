@@ -1,0 +1,68 @@
+def encrypt_image(image_path, key):
+  """
+  Encrypts an image by XORing each byte of the image data with the key.
+
+  Args:
+      image_path: Path to the image file.
+      key: A single integer value used as the encryption key.
+  """
+  try:
+    with open(image_path, 'rb') as image_file:
+      image_data = image_file.read()
+
+    encrypted_data = bytearray(len(image_data))
+    for i in range(len(image_data)):
+      encrypted_data[i] = image_data[i] ^ key
+
+    with open(f"{image_path}.encrypted", 'wb') as encrypted_file:
+      encrypted_file.write(encrypted_data)
+
+    print(f"Image encrypted and saved as: {image_path}.encrypted")
+  except FileNotFoundError:
+    print(f"Error: Image file not found at {image_path}")
+
+def decrypt_image(image_path, key):
+  """
+  Decrypts an encrypted image using the same key.
+
+  Args:
+      image_path: Path to the encrypted image file.
+      key: The encryption key used to encrypt the image.
+  """
+  try:
+    with open(image_path, 'rb') as encrypted_file:
+      encrypted_data = encrypted_file.read()
+
+    decrypted_data = bytearray(len(encrypted_data))
+    for i in range(len(encrypted_data)):
+      decrypted_data[i] = encrypted_data[i] ^ key
+
+    with open(f"{image_path}.decrypted", 'wb') as decrypted_file:
+      decrypted_file.write(decrypted_data)
+
+    print(f"Image decrypted and saved as: {image_path}.decrypted")
+  except FileNotFoundError:
+    print(f"Error: Image file not found at {image_path}")
+
+def main():
+  while True:
+    mode = input("Enter 'encrypt' or 'decrypt': ")
+    if mode.lower() in ("encrypt", "decrypt"):
+      break
+    else:
+      print("Invalid mode. Please enter 'encrypt' or 'decrypt'.")
+
+  image_path = input("Enter the image path: ")
+  try:
+    key = int(input("Enter the encryption/decryption key (integer): "))
+  except ValueError:
+    print("Invalid key. Please enter an integer.")
+    exit(1)
+
+  if mode == "encrypt":
+    encrypt_image(image_path, key)
+  else:
+    decrypt_image(image_path, key)
+
+if _name_ == "_main_":
+  main()
